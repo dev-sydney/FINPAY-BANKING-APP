@@ -1,0 +1,10 @@
+.left_pane {
+  border: 1px solid black;
+}
+.right_pane {
+  border: 1px solid green;
+
+  .header_panel {
+    border: 1px solid yellow;
+  }
+}
