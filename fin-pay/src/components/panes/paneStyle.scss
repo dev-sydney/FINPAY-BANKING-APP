@@ -7,4 +7,10 @@
   .header_panel {
     border: 1px solid yellow;
   }
+
+  .dash_board {
+    border: 1px solid brown;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+  }
 }
