@@ -1,7 +1,7 @@
 .left_pane {
   border: 1px solid black;
 }
-.right_pane {
+.overview_board {
   border: 1px solid green;
 
   .header_panel {
@@ -12,5 +12,10 @@
     border: 1px solid brown;
     display: grid;
     grid-template-columns: 2fr 1fr;
+  }
+  .summaries {
+    border: 1px solid coral;
+    display: flex;
+    column-gap: 1em;
   }
 }
