@@ -27,6 +27,7 @@ const RightPaneComponent = ({
   const [userPin, setUserPin] = useState('');
   const [user, setUser] = useState('');
   const [showApp, setShowApp] = useState(false);
+  const [showLogoutForm, setShowLogoutForm] = useState(true);
 
   const onUserChange = e => {
     setUser(e.target.value);
@@ -37,8 +38,11 @@ const RightPaneComponent = ({
 
   return (
     <div className="right_pane">
-      {!showApp ? (
-        <LoginComponent setShowApp={setShowApp} />
+      {!showApp || showLogoutForm ? (
+        <LoginComponent
+          setShowApp={setShowApp}
+          setShowLogoutForm={setShowLogoutForm}
+        />
       ) : (
         <div className="overview_board">
           <header className="header_panel">
@@ -47,23 +51,14 @@ const RightPaneComponent = ({
               Hi {currentUser && currentUser.ownerFullName.split(' ')[0]},
               welcome back
             </p>
-            <form>
-              <input
-                className="userNameInput"
-                placeholder="user"
-                value={user}
-                onChange={onUserChange}
-                type="text"
-              />
-              <input
-                className="userPinInput"
-                placeholder="PIN"
-                value={userPin}
-                onChange={onPinChange}
-                type="text"
-                maxLength="4"
-              />
-            </form>
+            <button
+              onClick={() => {
+                setShowApp(false);
+                setShowLogoutForm(false);
+              }}
+            >
+              Logout
+            </button>
           </header>
           <div className="dash_board">
             <BalanceComponent />

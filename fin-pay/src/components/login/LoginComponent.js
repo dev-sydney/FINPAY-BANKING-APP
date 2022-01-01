@@ -6,6 +6,7 @@ import { loginValidilityCheck } from '../../actions/userActions';
 
 const LoginComponent = ({
   setShowApp,
+  setShowLogoutForm,
   loginValidilityCheck,
   app: { accounts },
 }) => {
@@ -24,6 +25,7 @@ const LoginComponent = ({
     const isLoginvalid = loginValidilityCheck(user, userPin, accounts);
 
     setShowApp(isLoginvalid);
+    setShowLogoutForm(false);
   };
   return (
     <Fragment>
