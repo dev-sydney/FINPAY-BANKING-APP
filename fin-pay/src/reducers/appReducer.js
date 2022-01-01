@@ -31,6 +31,20 @@ const initialState = {
       ],
       locale: 'en-US',
       currency: 'GHS',
+      cards: [
+        {
+          cardHolder: 'Sarah Smith',
+          expiry: '09/23',
+          type: 'Visa',
+          CardNumber: 4747_4747_4747,
+        },
+        {
+          cardHolder: 'Sarah Smith',
+          expiry: '09/23',
+          type: 'Master-card',
+          CardNumber: 5454_5454_5454,
+        },
+      ],
     },
     {
       owner: 'sot',
@@ -49,6 +63,20 @@ const initialState = {
       ],
       locale: 'en-US',
       currency: 'GHS',
+      cards: [
+        {
+          cardHolder: 'Sydney Tetteh',
+          expiry: '05/23',
+          type: 'Visa',
+          CardNumber: 4848_4848_4848,
+        },
+        {
+          cardHolder: 'Sarah Smith',
+          expiry: '09/23',
+          type: 'Master-card',
+          CardNumber: 5454_5454_5454,
+        },
+      ],
     },
   ],
 };
@@ -96,3 +124,7 @@ export default (state = initialState, action) => {
       return state;
   }
 };
+/*
+TODO:
+1. IMPLEMENT THE CARD OBJECTS
+ */
