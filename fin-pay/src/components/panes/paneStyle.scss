@@ -3,6 +3,7 @@
 }
 .overview_board {
   border: 1px solid green;
+  height: 100%;
 
   .header_panel {
     border: 1px solid yellow;
@@ -12,6 +13,7 @@
     border: 1px solid brown;
     display: grid;
     grid-template-columns: 2fr 1fr;
+    height: fit-content;
   }
   .summaries {
     border: 1px solid coral;
