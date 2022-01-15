@@ -1,5 +1,5 @@
 /**CORE-IMPORTS */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 
 import paneStyle from './paneStyle.scss';
@@ -20,14 +20,23 @@ const RightPaneComponent = ({
   useEffect(() => {
     if (currentUser) {
       calcSummaries(currentUser);
+      dates.current = [
+        ...new Set(
+          currentUser.movementsDates.map(el =>
+            new Date(el).toLocaleDateString()
+          )
+        ),
+      ];
     }
     //eslint-disable-next-line
-  }, [currentUser, incomeSumm, transferSumm]);
+  }, [currentUser]);
 
   const [userPin, setUserPin] = useState('');
   const [user, setUser] = useState('');
   const [showApp, setShowApp] = useState(false);
   const [showLogoutForm, setShowLogoutForm] = useState(true);
+
+  const dates = useRef([]);
 
   const onUserChange = e => {
     setUser(e.target.value);
@@ -72,7 +81,14 @@ const RightPaneComponent = ({
                   {transferSumm && transferSumm}
                 </span>
               </div>
-              <TransactionItem />
+              {dates.current.map((el, id) => (
+                <TransactionItem
+                  transActions={currentUser.movements.filter(
+                    dt => new Date(dt.mvtDate).toLocaleDateString() === el
+                  )}
+                  key={id}
+                />
+              ))}
             </div>
             <CardCarosuel />
           </div>
