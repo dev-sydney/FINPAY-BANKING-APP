@@ -5,6 +5,7 @@ import {
   TRANSFER_MONEY,
   UPDATE_RECIVER_ACC,
   UPDATE_SENDER_ACC,
+  LOGOUT_USER,
 } from './types';
 
 /**
@@ -29,6 +30,10 @@ export const loginValidilityCheck = (userName, pin, accounts) => dispatch => {
   return accounts.includes(validAccount);
 };
 
+const setMovementDate = () => {
+  const movDate = new Date().toISOString();
+  return movDate;
+};
 /**
  * This Function Is Responsible For Calculating The User's Transaction Summaries eg Total incomes & Transfers
  * @param {Object} acc The Currently Logged In Account Object
@@ -36,17 +41,22 @@ export const loginValidilityCheck = (userName, pin, accounts) => dispatch => {
  */
 export const calcSummaries = acc => dispatch => {
   const incomes = acc.movements
-    .filter(mov => mov > 0)
+    .filter(mov => {
+      return mov.mvtAmt > 0;
+    })
+    .map(mov => mov.mvtAmt)
     .reduce((prev, curr) => {
       return prev + curr;
     }, 0);
+
   dispatch({
     type: INCOME_SUMMARY,
     payload: incomes,
   });
 
   const transfers = acc.movements
-    .filter(mov => mov < 0)
+    .filter(mov => mov.mvtAmt < 0)
+    .map(mov => mov.mvtAmt)
     .reduce((prev, curr) => {
       return prev + curr;
     }, 0);
@@ -80,7 +90,7 @@ const updateAccounts = (sender, reciever) => dispatch => {
  * @param {object} sender A sender Object
  */
 export const TransactionValidility =
-  (recepient, accounts, trnsferAmt, bal, sender) => dispatch => {
+  (recepient, accounts, trnsferAmt, bal, sender, ref) => dispatch => {
     //Sorting Out The Reciever Object
     const [validRecepient] = accounts.filter(acc => acc.owner === recepient);
 
@@ -88,17 +98,29 @@ export const TransactionValidility =
     if (trnsferAmt > bal || !validRecepient) return;
 
     //Updating Both The Movements Of Both The Sender & Reciever
-    validRecepient.movements = [...validRecepient.movements, trnsferAmt];
-    sender.movements = [...sender.movements, -trnsferAmt];
+    validRecepient.movements = [
+      ...validRecepient.movements,
+      {
+        mvtAmt: trnsferAmt,
+        mvtReference: ref,
+        mvtTo: validRecepient.owner,
+        mvtDate: setMovementDate(),
+      },
+    ];
+    const newSenderMov = {
+      mvtAmt: -trnsferAmt,
+      mvtReference: ref,
+      mvtTo: sender.owner,
+      mvtDate: setMovementDate(),
+    };
+    sender.movements = [...sender.movements, newSenderMov];
 
     dispatch({
       type: TRANSFER_MONEY,
-      payload: -trnsferAmt,
+      payload: newSenderMov,
     });
     updateAccounts(sender, recepient);
   };
+export const LogoutUser = pin => dispatch => {};
 
-export const setMovementDate = () => {
-  const movDate = new Date().toISOString();
-  return movDate;
-};
+// TODO:/* //54(MASTER-CARD)//4(VISA) */

@@ -6,7 +6,6 @@ import transItemStyle from './transItemStyle.scss';
  * @returns {Element} An element created using JSX is returned
  */
 const TransactionItem = ({ transActions }) => {
-  console.log(transActions);
   return (
     <div className="transaction">
       <strong>{new Date(transActions[0].mvtDate).toLocaleDateString()}</strong>

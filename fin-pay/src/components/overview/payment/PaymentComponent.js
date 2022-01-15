@@ -15,7 +15,7 @@ const PaymentComponent = ({
     if (movements.length > 0)
       setAvBalance(
         movements.reduce((prev, curr) => {
-          return prev + curr;
+          return prev.mvtAmt + curr.mvtAmt;
         }, 0)
       );
     //eslint-disable-next-line
@@ -23,6 +23,7 @@ const PaymentComponent = ({
 
   const [recepientName, setRecepientName] = useState('');
   const [transferAmount, setTransferAmount] = useState('');
+  const [reference, setReference] = useState('');
   /**
    * Responsible for handling the change Event in the recepientName input
    * @param {*} e
@@ -37,6 +38,15 @@ const PaymentComponent = ({
   const onAmountChange = e => {
     setTransferAmount(+e.target.value);
   };
+
+  /**
+   * Responsible for handling the change event in the Reference input
+   * @param {*} e
+   */
+  const onReferenceChange = e => {
+    setReference(e.target.value);
+  };
+
   const onFormSubmit = e => {
     e.preventDefault();
     if (recepientName !== currentUser.owner) {
@@ -45,7 +55,8 @@ const PaymentComponent = ({
         accounts,
         transferAmount,
         avBalance,
-        currentUser
+        currentUser,
+        reference
       );
     }
   };
@@ -65,6 +76,12 @@ const PaymentComponent = ({
           placeholder="amount"
           onChange={onAmountChange}
           value={transferAmount}
+        />
+        <input
+          type="text"
+          placeholder="reference"
+          onChange={onReferenceChange}
+          value={reference}
         />
         <button type="submit">Send</button>
       </form>

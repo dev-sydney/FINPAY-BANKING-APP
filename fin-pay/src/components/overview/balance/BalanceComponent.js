@@ -8,9 +8,11 @@ const BalanceComponent = ({ app: { currentUser } }) => {
   useEffect(() => {
     if (currentUser)
       setBalance(
-        currentUser.movements.reduce((prev, curr) => {
-          return prev + curr;
-        }, 0)
+        currentUser.movements
+          .map(mov => mov.mvtAmt)
+          .reduce((prev, curr) => {
+            return prev + curr;
+          }, 0)
       );
     //eslint-disable-next-line
   }, [currentUser]);
