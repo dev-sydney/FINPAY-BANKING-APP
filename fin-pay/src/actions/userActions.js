@@ -6,6 +6,7 @@ import {
   UPDATE_RECIVER_ACC,
   UPDATE_SENDER_ACC,
   LOGOUT_USER,
+  CARDS_MOVEMENTS,
 } from './types';
 
 /**
@@ -40,7 +41,8 @@ const setMovementDate = () => {
  * @returns
  */
 export const calcSummaries = acc => dispatch => {
-  const incomes = acc.movements
+  console.log('summaries not available yet');
+  /* const incomes = acc.movements
     .filter(mov => {
       return mov.mvtAmt > 0;
     })
@@ -63,7 +65,7 @@ export const calcSummaries = acc => dispatch => {
   dispatch({
     type: TRANSFERS_SUMMARY,
     payload: transfers,
-  });
+  }); */
 };
 /**
  * Function Responsible For dispatching the types that will update the accounts movements
@@ -122,5 +124,15 @@ export const TransactionValidility =
     updateAccounts(sender, recepient);
   };
 export const LogoutUser = pin => dispatch => {};
+
+export const createCardMovements = acc => dispatch => {
+  const { cards } = acc;
+  const everyCardMvt = cards.map(el => el.cardMvts.map(cMvt => cMvt.mvtAmt));
+
+  dispatch({
+    type: CARDS_MOVEMENTS,
+    payload: everyCardMvt,
+  });
+};
 
 // TODO:/* //54(MASTER-CARD)//4(VISA) */
