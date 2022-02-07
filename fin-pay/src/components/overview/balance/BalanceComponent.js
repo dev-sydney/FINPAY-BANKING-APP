@@ -2,20 +2,19 @@ import React, { useEffect, useState } from 'react';
 import balStyle from './balStyle.scss';
 import { connect } from 'react-redux';
 
-const BalanceComponent = ({ app: { currentUser } }) => {
+const BalanceComponent = ({ app: { currentUser }, cardMovements }) => {
   const [balance, setBalance] = useState(0);
 
   useEffect(() => {
-    if (currentUser)
+    if (cardMovements) {
       setBalance(
-        currentUser.movements
-          .map(mov => mov.mvtAmt)
-          .reduce((prev, curr) => {
-            return prev + curr;
-          }, 0)
+        cardMovements.reduce((prev, curr) => {
+          return prev + curr;
+        }, 0)
       );
+    }
     //eslint-disable-next-line
-  }, [currentUser]);
+  }, [cardMovements]);
 
   return (
     <div className="bal_card">

@@ -1,16 +1,25 @@
 import React from 'react';
+
 import carosuelStyle from './carosuelStyle.scss';
 import CreditCard from '../../credit-card/CreditCard';
 
-const CardCarosuel = () => {
+import { connect } from 'react-redux';
+import uuid from 'uuid';
+
+const CardCarosuel = ({ app: { currentUser } }) => {
   return (
     <div className="card_carosuel">
       <h3 style={{ margin: '0%' }}>Your Cards</h3>
       <div className="cards">
-        <CreditCard />
+        {currentUser &&
+          currentUser.cards.map(el => <CreditCard cardObj={el} key={uuid()} />)}
+
         <CreditCard />
       </div>
     </div>
   );
 };
-export default CardCarosuel;
+const mapStateToProps = state => ({
+  app: state.app,
+});
+export default connect()(CardCarosuel);
