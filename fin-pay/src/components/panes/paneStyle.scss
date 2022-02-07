@@ -1,6 +1,7 @@
 .left_pane {
   border: 1px solid black;
 }
+
 .overview_board {
   border: 1px solid green;
   height: 100%;
@@ -19,5 +20,11 @@
     border: 1px solid coral;
     display: flex;
     column-gap: 1em;
+  }
+  .cards {
+    width: 100%;
+    height: fit-content;
+    border: 1px solid rgb(16, 219, 26);
+    overflow-x: hidden;
   }
 }
