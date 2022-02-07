@@ -1,7 +1,13 @@
 .card_component {
-  border: 2px solid green;
-  height: 70%;
+  /*   border: 2px solid green;
+ */
+  height: fit-content;
   width: 20em;
+  top: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 1s;
   .card_num {
     margin: 0%;
   }
