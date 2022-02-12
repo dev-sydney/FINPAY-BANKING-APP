@@ -44,19 +44,22 @@ const RightPaneComponent = ({
             .filter(arrEl => arrEl.length > 0)
         )[0]
       );
+
       maxCard.current = currentUser.cards.length;
     }
     //eslint-disable-next-line
   }, [currentUser]);
 
+  /////////////STATES////////////////////////////
   const [userPin, setUserPin] = useState('');
   const [user, setUser] = useState('');
   const [showApp, setShowApp] = useState(false);
   const [showLogoutForm, setShowLogoutForm] = useState(true);
   const [cardsMovements, setCardsMovements] = useState([]);
 
+  /////////////REFS////////////////////////////
   const maxCard = useRef(0);
-  const [currentCard, setCurrentCard] = useState(0);
+  let [currentCard, setCurrentCard] = useState(0);
 
   const dates = useRef([]);
   //////////////ONCHANGE HANDLER FUNCTIONS
@@ -68,22 +71,41 @@ const RightPaneComponent = ({
   };
   //////////////UTILITY FUNCTIONS
   const nextCard = () => {
-    console.log(currentCard);
-    if (currentCard === maxCard.current) {
-      setCurrentCard(0);
-    } else {
-      setCurrentCard(currentCard + 1);
-      console.log(currentCard);
-    }
+    if (currentCard === maxCard.current) return;
+
+    setCurrentCard(currentCard + 1);
+    setCardsMovements(
+      dates.current.map((el, id) =>
+        dates.current
+          .map(el =>
+            currentUser.cards[currentCard].cardMvts.filter(
+              el3 => new Date(el3.mvtDate).toLocaleDateString() === el
+            )
+          )
+          .filter(arrEl => arrEl.length > 0)
+      )[0]
+    );
   };
 
   const prevCard = () => {
-    if (currentCard === 0) {
-      setCurrentCard(maxCard.current);
-    } else {
-      setCurrentCard(currentCard - 1);
-      console.log(currentCard);
-    }
+    if (currentCard === 0) return;
+
+    setCurrentCard(currentCard - 1);
+    setCardsMovements(
+      dates.current.map((el, id) =>
+        dates.current
+          .map(el =>
+            currentUser.cards[
+              currentCard === maxCard.current
+                ? currentCard - 2
+                : currentCard - 1
+            ].cardMvts.filter(
+              el3 => new Date(el3.mvtDate).toLocaleDateString() === el
+            )
+          )
+          .filter(arrEl => arrEl.length > 0)
+      )[0]
+    );
   };
 
   return (
