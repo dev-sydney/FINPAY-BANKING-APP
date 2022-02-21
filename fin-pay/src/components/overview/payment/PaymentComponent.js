@@ -6,23 +6,25 @@ import { connect } from 'react-redux';
 import { TransactionValidility } from '../../../actions/userActions';
 
 const PaymentComponent = ({
-  app: { movements, accounts, currentUser },
+  app: { accounts, currentUser },
   TransactionValidility,
+  cardMovements,
 }) => {
-  const [avBalance, setAvBalance] = useState(0);
-
   useEffect(() => {
-    if (movements.length > 0)
+    if (cardMovements) {
       setAvBalance(
-        movements.reduce((prev, curr) => {
-          return prev.mvtAmt + curr.mvtAmt;
+        cardMovements.reduce((prev, curr) => {
+          return prev + curr;
         }, 0)
       );
+    }
     //eslint-disable-next-line
-  }, [movements]);
+  }, [cardMovements]);
 
+  const [avBalance, setAvBalance] = useState(0);
   const [recepientName, setRecepientName] = useState('');
   const [transferAmount, setTransferAmount] = useState('');
+  const [recieptAccNum, setRecieptAccNum] = useState('');
   const [reference, setReference] = useState('');
   /**
    * Responsible for handling the change Event in the recepientName input
@@ -36,7 +38,7 @@ const PaymentComponent = ({
    * @param {*} e
    */
   const onAmountChange = e => {
-    setTransferAmount(+e.target.value);
+    setTransferAmount(e.target.value);
   };
 
   /**
@@ -45,6 +47,13 @@ const PaymentComponent = ({
    */
   const onReferenceChange = e => {
     setReference(e.target.value);
+  };
+  /**
+   * Responsinle for handling the change event in the reciept Account Number input
+   * @param {Object} e
+   */
+  const onAccNumChange = e => {
+    setRecieptAccNum(e.target.value);
   };
 
   const onFormSubmit = e => {
@@ -56,7 +65,8 @@ const PaymentComponent = ({
         transferAmount,
         avBalance,
         currentUser,
-        reference
+        reference,
+        +recieptAccNum
       );
     }
   };
@@ -70,6 +80,12 @@ const PaymentComponent = ({
           placeholder="user"
           onChange={onUserChange}
           value={recepientName}
+        />
+        <input
+          type="text"
+          placeholder="acc num"
+          value={recieptAccNum}
+          onChange={onAccNumChange}
         />
         <input
           type="text"
