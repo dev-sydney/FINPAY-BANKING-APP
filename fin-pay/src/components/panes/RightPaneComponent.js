@@ -9,17 +9,24 @@ import TransactionItem from '../overview/transItem/TransactionItem';
 import PaymentComponent from '../overview/payment/PaymentComponent';
 import LoginComponent from '../login/LoginComponent';
 import CreditCard from '../credit-card/CreditCard';
+import TransactionsContainer from '../overview/transactions/TransactionsContainer';
 
 /**ACTION-IMPORTS */
-import { calcSummaries, createCardMovements } from '../../actions/userActions';
-
-const RightPaneComponent = ({
-  app: { currentUser, incomeSumm, transferSumm, movements },
+import {
   calcSummaries,
   createCardMovements,
+  loadCCMovements,
+} from '../../actions/userActions';
+
+const RightPaneComponent = ({
+  app: { currentUser, incomeSumm, transferSumm, cardTransactions, ccMovements },
+  calcSummaries,
+  createCardMovements,
+  loadCCMovements,
 }) => {
   useEffect(() => {
     if (currentUser) {
+      loadCCMovements(currentUser);
       calcSummaries(currentUser);
       createCardMovements(currentUser);
       dates.current = [
@@ -30,20 +37,6 @@ const RightPaneComponent = ({
         ),
       ];
       //SETTING THE CREDIT CARD MOVEMENTS
-      setCardsMovements(
-        dates.current.map((el, id) =>
-          dates.current
-            .map(el =>
-              currentUser.cards.map(el2 =>
-                el2.cardMvts.filter(
-                  el3 => new Date(el3.mvtDate).toLocaleDateString() === el
-                )
-              )
-            )
-            .flat()
-            .filter(arrEl => arrEl.length > 0)
-        )[0]
-      );
 
       maxCard.current = currentUser.cards.length;
     }
@@ -55,11 +48,10 @@ const RightPaneComponent = ({
   const [user, setUser] = useState('');
   const [showApp, setShowApp] = useState(false);
   const [showLogoutForm, setShowLogoutForm] = useState(true);
-  const [cardsMovements, setCardsMovements] = useState([]);
+  let [currentCard, setCurrentCard] = useState(0);
 
   /////////////REFS////////////////////////////
   const maxCard = useRef(0);
-  let [currentCard, setCurrentCard] = useState(0);
 
   const dates = useRef([]);
   //////////////ONCHANGE HANDLER FUNCTIONS
@@ -71,41 +63,15 @@ const RightPaneComponent = ({
   };
   //////////////UTILITY FUNCTIONS
   const nextCard = () => {
-    if (currentCard === maxCard.current) return;
+    if (currentCard === maxCard.current - 1) return;
 
     setCurrentCard(currentCard + 1);
-    setCardsMovements(
-      dates.current.map((el, id) =>
-        dates.current
-          .map(el =>
-            currentUser.cards[currentCard].cardMvts.filter(
-              el3 => new Date(el3.mvtDate).toLocaleDateString() === el
-            )
-          )
-          .filter(arrEl => arrEl.length > 0)
-      )[0]
-    );
   };
 
   const prevCard = () => {
     if (currentCard === 0) return;
 
     setCurrentCard(currentCard - 1);
-    setCardsMovements(
-      dates.current.map((el, id) =>
-        dates.current
-          .map(el =>
-            currentUser.cards[
-              currentCard === maxCard.current
-                ? currentCard - 2
-                : currentCard - 1
-            ].cardMvts.filter(
-              el3 => new Date(el3.mvtDate).toLocaleDateString() === el
-            )
-          )
-          .filter(arrEl => arrEl.length > 0)
-      )[0]
-    );
   };
 
   return (
@@ -133,32 +99,22 @@ const RightPaneComponent = ({
             </button>
           </header>
           <div className="dash_board">
-            {movements.length > 0 ? (
-              <BalanceComponent
-                cardMovements={
-                  currentCard === maxCard.current
-                    ? movements[0]
-                    : movements[currentCard]
-                }
-              />
+            {cardTransactions.length > 0 ? (
+              <BalanceComponent cardMovements={cardTransactions[currentCard]} />
             ) : (
               ''
             )}
-            <PaymentComponent />
-            <div className="transactions_container">
-              <div className="summaries">
-                <span style={{ color: 'green' }}>
-                  {incomeSumm && incomeSumm}
-                </span>
-                <span style={{ color: 'red' }}>
-                  {transferSumm && transferSumm}
-                </span>
-              </div>
-              {cardsMovements.length > 0 &&
-                cardsMovements.map((el, i) => (
-                  <TransactionItem transActions={el} key={i} />
-                ))}
-            </div>
+
+            {cardTransactions.length > 0 ? (
+              <PaymentComponent cardMovements={cardTransactions[currentCard]} />
+            ) : (
+              ''
+            )}
+            {ccMovements ? (
+              <TransactionsContainer ccMovements={ccMovements[currentCard]} />
+            ) : (
+              ''
+            )}
 
             <div className="card_carosuel">
               <h3 style={{ margin: '0%' }}>Your Cards</h3>
@@ -166,13 +122,7 @@ const RightPaneComponent = ({
                 <button onClick={prevCard}>⬅️</button>
                 <button onClick={nextCard}>➡️</button>
                 {currentUser && (
-                  <CreditCard
-                    cardObj={
-                      currentCard === maxCard.current
-                        ? currentUser.cards[0]
-                        : currentUser.cards[currentCard]
-                    }
-                  />
+                  <CreditCard cardObj={currentUser.cards[currentCard]} />
                 )}
               </div>
             </div>
@@ -185,6 +135,8 @@ const RightPaneComponent = ({
 const mapStateToProps = state => ({
   app: state.app,
 });
-export default connect(mapStateToProps, { calcSummaries, createCardMovements })(
-  RightPaneComponent
-);
+export default connect(mapStateToProps, {
+  calcSummaries,
+  createCardMovements,
+  loadCCMovements,
+})(RightPaneComponent);
