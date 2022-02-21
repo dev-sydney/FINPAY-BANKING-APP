@@ -5,14 +5,16 @@ import {
   TRANSFER_MONEY,
   UPDATE_RECIVER_ACC,
   UPDATE_SENDER_ACC,
-  CARDS_MOVEMENTS,
+  CARD_TRANSACTIONS,
+  CC_MOVEMENTS,
 } from '../actions/types';
 
 const initialState = {
   currentUser: null,
   incomeSumm: null,
   transferSumm: null,
-  movements: null,
+  cardTransactions: [],
+  ccMovements: null,
 
   accounts: [
     {
@@ -35,7 +37,7 @@ const initialState = {
           cardHolder: 'Sarah Smith',
           expiry: '09/23',
           type: 'Visa',
-          CardNumber: 4747_4747_4747,
+          CardNumber: 474747474747,
           cardMvts: [
             {
               id: 0,
@@ -222,10 +224,15 @@ export default (state = initialState, action) => {
           action.payload,
         ],
       };
-    case CARDS_MOVEMENTS:
+    case CARD_TRANSACTIONS:
       return {
         ...state,
-        movements: action.payload,
+        cardTransactions: action.payload,
+      };
+    case CC_MOVEMENTS:
+      return {
+        ...state,
+        ccMovements: action.payload,
       };
     default:
       return state;
