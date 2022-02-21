@@ -7,6 +7,8 @@ import {
   UPDATE_SENDER_ACC,
   LOGOUT_USER,
   CARDS_MOVEMENTS,
+  CC_MOVEMENTS,
+  CARD_TRANSACTIONS,
 } from './types';
 
 /**
@@ -92,13 +94,15 @@ const updateAccounts = (sender, reciever) => dispatch => {
  * @param {object} sender A sender Object
  */
 export const TransactionValidility =
-  (recepient, accounts, trnsferAmt, bal, sender, ref) => dispatch => {
+  (recepient, accounts, trnsferAmt, bal, sender, ref, accNum) => dispatch => {
     //Sorting Out The Reciever Object
     const [validRecepient] = accounts.filter(acc => acc.owner === recepient);
 
-    //Form Validation(Guard Clauses)
-    if (trnsferAmt > bal || !validRecepient) return;
+    console.log(validRecepient.cards.filter(cd => accNum === cd.CardNumber));
 
+    //Form Validation(Guard Clauses)
+    if (+trnsferAmt > bal || !validRecepient) return;
+    console.log(trnsferAmt);
     //Updating Both The Movements Of Both The Sender & Reciever
     validRecepient.movements = [
       ...validRecepient.movements,
@@ -130,8 +134,17 @@ export const createCardMovements = acc => dispatch => {
   const everyCardMvt = cards.map(el => el.cardMvts.map(cMvt => cMvt.mvtAmt));
 
   dispatch({
-    type: CARDS_MOVEMENTS,
+    type: CARD_TRANSACTIONS,
     payload: everyCardMvt,
+  });
+};
+
+export const loadCCMovements = acc => dispatch => {
+  const { cards } = acc;
+  const ccMovements = cards.map(el => el.cardMvts);
+  dispatch({
+    type: CC_MOVEMENTS,
+    payload: ccMovements,
   });
 };
 
